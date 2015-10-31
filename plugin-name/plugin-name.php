@@ -1,5 +1,11 @@
 <?php
 
+namespace PluginName;
+
+use PluginName\includes\Activator;
+use PluginName\includes\Deactivator;
+use PluginName\includes\Plugin;
+
 /**
  * The plugin bootstrap file
  *
@@ -10,7 +16,7 @@
  *
  * @link              http://example.com
  * @since             1.0.0
- * @package           Plugin_Name
+ * @package           PluginName
  *
  * @wordpress-plugin
  * Plugin Name:       WordPress Plugin Boilerplate
@@ -30,32 +36,20 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+spl_autoload_register( '\PluginName\autoloader' );
+
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
  */
-function activate_plugin_name() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-activator.php';
-	Plugin_Name_Activator::activate();
-}
+register_activation_hook( __FILE__, function(){ Activator::activate(); } );
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-plugin-name-deactivator.php
  */
-function deactivate_plugin_name() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-deactivator.php';
-	Plugin_Name_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_plugin_name' );
-register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name.php';
+register_deactivation_hook( __FILE__, function(){ Deactivator::deactivate(); } );
 
 /**
  * Begins execution of the plugin.
@@ -66,10 +60,37 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name.php';
  *
  * @since    1.0.0
  */
-function run_plugin_name() {
+(new Plugin( 'plugin-name', plugin_dir_path( dirname( __FILE__ ) ) ) )->run();
 
-	$plugin = new Plugin_Name();
-	$plugin->run();
+/**
+ * Custom plugin autoloader function
+ * @param $class
+ */
+function autoloader($class){
+	$plugin_path = plugin_dir_path( __FILE__ );
 
+	if(isset($childclass[0]) && isset($childclass[1])){
+		if($childclass[0] == "PluginName"){
+			switch($childclass[1]){
+				case "includes":
+					$name = end($childclass);
+					$name = lcfirst(preg_replace("/_/","-",$name));
+					require_once $plugin_path."includes/class-".$name.".php";
+					break;
+				case "widgets":
+					$name = end($childclass);
+					require_once $plugin_path."widgets/".$name.".php";
+					break;
+			}
+		}
+	}
+
+	switch($class){
+		case 'PluginName\pub\Pub':
+			require_once plugin_dir_path( __FILE__ ) . 'public/class-public.php';
+			break;
+		case 'PluginName\admin\Admin':
+			require_once plugin_dir_path( __FILE__ ) . 'admin/class-admin.php';
+			break;
+	}
 }
-run_plugin_name();

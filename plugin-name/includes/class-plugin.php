@@ -9,9 +9,13 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
+ * @package    PluginName
+ * @subpackage PluginName/includes
  */
+
+namespace PluginName\includes;
+use PluginName\admin\Admin;
+use PluginName\pub\Pub;
 
 /**
  * The core plugin class.
@@ -23,11 +27,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
+ * @package    PluginName
+ * @subpackage PluginName/includes
  * @author     Your Name <email@example.com>
  */
-class Plugin_Name {
+class Plugin {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -35,7 +39,7 @@ class Plugin_Name {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Plugin_Name_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -49,6 +53,30 @@ class Plugin_Name {
 	protected $plugin_name;
 
 	/**
+	 * The plugin dir
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 */
+	protected $plugin_dir;
+
+	/**
+	 * The full path to main plugin file
+	 *
+	 * @since 0.10.0
+	 * @access   protected
+	 * @var string
+	 */
+	protected $plugin_path;
+
+	/**
+	 * The path relative to WP_PLUGIN_DIR
+	 *
+	 * @var
+	 */
+	protected $plugin_relative_dir;
+
+	/**
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
@@ -56,6 +84,8 @@ class Plugin_Name {
 	 * @var      string    $version    The current version of the plugin.
 	 */
 	protected $version;
+
+	protected $debug_mode = false;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -66,16 +96,38 @@ class Plugin_Name {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
+	public function __construct($slug,$dir,$version = "1.0.0") {
+		$this->plugin_name = $slug;
+		$this->plugin_dir= $dir;
+		$this->version = $version;
 
-		$this->plugin_name = 'plugin-name';
-		$this->version = '1.0.0';
+		$this->plugin_path = $this->plugin_dir.$this->plugin_name.".php";
+
+		//Set relative path
+		$pinfo = pathinfo($dir);
+		$this->plugin_relative_dir = "/".$pinfo['basename'];
+
+		//Get the version
+		if(function_exists("get_plugin_data")){
+			$pluginHeader = get_plugin_data($this->plugin_path, false, false);
+			if ( isset($pluginHeader['Version']) ) {
+				$this->version = $pluginHeader['Version'];
+			} else {
+				$this->version = $version;
+			}
+		}else{
+			$this->version = $version;
+		}
+
+		//Check if debug mode must be activated
+		if( (defined("WP_DEBUG") && WP_DEBUG) ){
+			$this->debug_mode = true;
+		}
 
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -83,10 +135,10 @@ class Plugin_Name {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Plugin_Name_Loader. Orchestrates the hooks of the plugin.
-	 * - Plugin_Name_i18n. Defines internationalization functionality.
-	 * - Plugin_Name_Admin. Defines all hooks for the admin area.
-	 * - Plugin_Name_Public. Defines all hooks for the public side of the site.
+	 * - PluginName_Loader. Orchestrates the hooks of the plugin.
+	 * - PluginName_i18n. Defines internationalization functionality.
+	 * - PluginName_Admin. Defines all hooks for the admin area.
+	 * - PluginName_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -95,50 +147,23 @@ class Plugin_Name {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-plugin-name-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-plugin-name-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-plugin-name-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-name-public.php';
-
-		$this->loader = new Plugin_Name_Loader();
-
+		$this->loader = new Loader();
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Plugin_Name_i18n class in order to set the domain and to register the hook
+	 * Uses the PluginName_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function set_locale() {
-
-		$plugin_i18n = new Plugin_Name_i18n();
+		$plugin_i18n = new i18n();
 		$plugin_i18n->set_domain( $this->get_plugin_name() );
-
+		$plugin_i18n->set_language_dir( $this->plugin_relative_dir."/languages/" );
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -149,12 +174,9 @@ class Plugin_Name {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
-		$plugin_admin = new Plugin_Name_Admin( $this->get_plugin_name(), $this->get_version() );
-
+		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
 	}
 
 	/**
@@ -165,12 +187,9 @@ class Plugin_Name {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
-		$plugin_public = new Plugin_Name_Public( $this->get_plugin_name(), $this->get_version() );
-
+		$plugin_public = new Pub( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
 
 	/**
@@ -197,7 +216,7 @@ class Plugin_Name {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Plugin_Name_Loader    Orchestrates the hooks of the plugin.
+	 * @return    Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -213,4 +232,47 @@ class Plugin_Name {
 		return $this->version;
 	}
 
+	/**
+	 * Get plugin directory uri
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
+	public function get_uri(){
+		return get_bloginfo("wpurl")."/wp-content/plugins/".$this->plugin_name."/";
+	}
+
+	/**
+	 * Get plugin directory
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
+	public function get_dir(){
+		return $this->plugin_dir;
+	}
+
+	/**
+	 * Get plugin full path to directory
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
+	public function get_path(){
+		return $this->plugin_path;
+	}
+
+	public function get_relative_dir(){
+		return $this->plugin_relative_dir;
+	}
+
+	/**
+	 * Checks if the plugin is in debug mode. The debug mode is activated by WP_DEBUG constant.
+	 *
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	public function is_debug(){
+		return $this->debug_mode;
+	}
 }

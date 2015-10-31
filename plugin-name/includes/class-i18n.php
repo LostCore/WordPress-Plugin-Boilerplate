@@ -9,9 +9,11 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
+ * @package    PluginName
+ * @subpackage PluginName/includes
  */
+
+namespace PluginName\includes;
 
 /**
  * Define the internationalization functionality.
@@ -20,11 +22,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
+ * @package    PluginName
+ * @subpackage PluginName/includes
  * @author     Your Name <email@example.com>
  */
-class Plugin_Name_i18n {
+class i18n {
 
 	/**
 	 * The domain specified for this plugin.
@@ -36,6 +38,13 @@ class Plugin_Name_i18n {
 	private $domain;
 
 	/**
+	 * The language directory (relative to WP_PLUGIN_DIR)
+	 *
+	 * @var
+	 */
+	private $dir;
+
+	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since    1.0.0
@@ -45,7 +54,7 @@ class Plugin_Name_i18n {
 		load_plugin_textdomain(
 			$this->domain,
 			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+			$this->dir
 		);
 
 	}
@@ -60,4 +69,13 @@ class Plugin_Name_i18n {
 		$this->domain = $domain;
 	}
 
+	/**
+	 * Set the language files directory. It is called in class-plugin.php via set_locale().
+	 *
+	 * @since 1.0.0
+	 * @param string $dir
+	 */
+	public function set_language_dir($dir){
+		$this->dir = $dir;
+	}
 }
