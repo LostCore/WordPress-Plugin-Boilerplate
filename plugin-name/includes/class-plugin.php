@@ -126,6 +126,7 @@ class Plugin {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_global_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -172,7 +173,11 @@ class Plugin {
 	}
 
 	public function enqueue_main_script(){
-		wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/dist/js/plugin-name.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+		if($this->is_debug()){
+			wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/src/js/bundle.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+		}else{
+			wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/dist/js/plugin-name.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+		}
 	}
 
 	/**
@@ -183,7 +188,6 @@ class Plugin {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		//Examples:
 		$this->loader->add_action( 'admin_enqueue_scripts', $this->loader->admin_plugin, 'enqueue_styles' );
 	}
 
@@ -195,7 +199,6 @@ class Plugin {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-		//Examples:
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->loader->public_plugin, 'enqueue_styles' );
 	}
 
