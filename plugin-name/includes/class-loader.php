@@ -75,11 +75,11 @@ class Loader {
 			$class_name_parts = explode("\\",get_class($plugin));
 			if(is_file($plugin->get_dir()."public/class-public.php")){
 				$class_name = $class_name_parts[0].'\pub\Pub';
-				$this->public_plugin = new $class_name($plugin->get_plugin_name(), $plugin->get_version(), $plugin);
+				$this->public_plugin = new $class_name($plugin);
 			}
 			if(is_file($plugin->get_dir()."admin/class-admin.php")){
 				$class_name = $class_name_parts[0].'\admin\Admin';
-				$this->admin_plugin = new $class_name($plugin->get_plugin_name(), $plugin->get_version(), $plugin);
+				$this->admin_plugin = new $class_name($plugin);
 			}
 		}
 	}

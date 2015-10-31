@@ -26,24 +26,6 @@ use PluginName\includes\Plugin;
 class Admin {
 
 	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $PluginName    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
-
-	/**
 	 * A reference to the main plugin class
 	 *
 	 * @since 1.0.0
@@ -55,14 +37,9 @@ class Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
-	 * @param      string    $version    The version of this plugin.
-	 * @param      Plugin    $instance   An instance of /includes/class-plugin.php
+	 * @param    Plugin    $instance   An instance of /includes/class-plugin.php
 	 */
-	public function __construct( $plugin_name, $version, Plugin $instance ) {
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+	public function __construct( Plugin $instance ) {
 		$this->plugin = $instance;
 	}
 

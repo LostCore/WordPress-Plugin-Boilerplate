@@ -37,11 +37,9 @@ class Pub {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
-	 * @param      Plugin    $instance   An instance of /includes/class-plugin.php
+	 * @param    Plugin    $instance   An instance of /includes/class-plugin.php
 	 */
-	public function __construct( $plugin_name, $version, Plugin $instance ) {
+	public function __construct( Plugin $instance ) {
 		$this->plugin = $instance;
 	}
 
