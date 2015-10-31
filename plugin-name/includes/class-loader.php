@@ -44,15 +44,44 @@ class Loader {
 	protected $filters;
 
 	/**
-	 * Initialize the collections used to maintain the actions and filters.
+	 * A reference to \PluginName\pub\Pub
+	 *
+	 * @since 1.0.0
+	 * @var \PluginName\pub\Pub $public_plugin
+	 */
+	public $public_plugin;
+
+	/**
+	 * A reference to \PluginName\admin\Admin
+	 *
+	 * @since 1.0.0
+	 * @var \PluginName\admin\Admin $admin_plugin
+	 */
+	public $admin_plugin;
+
+	/**
+	 * Initialize the collections used to maintain the actions and filters and the plugin classes references.
 	 *
 	 * @since    1.0.0
+	 * @param Plugin $plugin the plugin class that calls the loader
 	 */
-	public function __construct() {
+	public function __construct(Plugin $plugin = null) {
 
 		$this->actions = array();
 		$this->filters = array();
 
+		//Set up $this->public_plugin and $this->admin_plugin
+		if(isset($plugin)){
+			$class_name_parts = explode("\\",get_class($plugin));
+			if(is_file($plugin->get_dir()."public/class-public.php")){
+				$class_name = $class_name_parts[0].'\pub\Pub';
+				$this->public_plugin = new $class_name($plugin->get_plugin_name(), $plugin->get_version(), $plugin);
+			}
+			if(is_file($plugin->get_dir()."admin/class-admin.php")){
+				$class_name = $class_name_parts[0].'\admin\Admin';
+				$this->admin_plugin = new $class_name($plugin->get_plugin_name(), $plugin->get_version(), $plugin);
+			}
+		}
 	}
 
 	/**

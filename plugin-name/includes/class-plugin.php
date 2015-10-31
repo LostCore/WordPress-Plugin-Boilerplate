@@ -133,12 +133,12 @@ class Plugin {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Include the following files that make up the plugin:
+	 * Include the following files\classes that make up the plugin:
 	 *
-	 * - PluginName_Loader. Orchestrates the hooks of the plugin.
-	 * - PluginName_i18n. Defines internationalization functionality.
-	 * - PluginName_Admin. Defines all hooks for the admin area.
-	 * - PluginName_Public. Defines all hooks for the public side of the site.
+	 * - Loader. Orchestrates the hooks of the plugin.
+	 * - i18n. Defines internationalization functionality.
+	 * - Admin. Defines all hooks for the admin area.
+	 * - Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -147,7 +147,7 @@ class Plugin {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-		$this->loader = new Loader();
+		$this->loader = new Loader($this);
 	}
 
 	/**
@@ -166,6 +166,15 @@ class Plugin {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
+	private function define_global_hooks(){
+		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_main_script' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_main_script' );
+	}
+
+	public function enqueue_main_script(){
+		wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/dist/js/plugin-name.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+	}
+
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -174,9 +183,8 @@ class Plugin {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		//Examples:
+		$this->loader->add_action( 'admin_enqueue_scripts', $this->loader->admin_plugin, 'enqueue_styles' );
 	}
 
 	/**
@@ -187,9 +195,8 @@ class Plugin {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new Pub( $this->get_plugin_name(), $this->get_version() );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		//Examples:
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->loader->public_plugin, 'enqueue_styles' );
 	}
 
 	/**
