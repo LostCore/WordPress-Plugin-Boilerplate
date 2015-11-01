@@ -96,11 +96,10 @@ class Plugin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct($slug,$dir,$version = "1.0.0") {
+	public function __construct($slug,$dir = null,$version = "1.0.0") {
 		$this->plugin_name = $slug;
-		$this->plugin_dir= $dir;
+		$this->plugin_dir = isset($dir) ? $dir : plugin_dir_path(dirname(dirname(__FILE__)));
 		$this->version = $version;
-
 		$this->plugin_path = $this->plugin_dir.$this->plugin_name.".php";
 
 		//Set relative path

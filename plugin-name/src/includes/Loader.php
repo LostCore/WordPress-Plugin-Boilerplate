@@ -73,11 +73,11 @@ class Loader {
 		//Set up $this->public_plugin and $this->admin_plugin
 		if(isset($plugin)){
 			$class_name_parts = explode("\\",get_class($plugin));
-			if(is_file($plugin->get_dir()."public/class-public.php")){
-				$class_name = $class_name_parts[0].'\pub\Pub';
+			if(is_file($plugin->get_dir()."src/frontend/Frontend.php")){
+				$class_name = $class_name_parts[0].'\frontend\Frontend';
 				$this->public_plugin = new $class_name($plugin);
 			}
-			if(is_file($plugin->get_dir()."admin/class-admin.php")){
+			if(is_file($plugin->get_dir()."src/admin/Admin.php")){
 				$class_name = $class_name_parts[0].'\admin\Admin';
 				$this->admin_plugin = new $class_name($plugin);
 			}

@@ -10,7 +10,7 @@
  * @subpackage PluginName/public
  */
 
-namespace PluginName\pub;
+namespace PluginName\frontend;
 use PluginName\includes\Plugin;
 
 /**
@@ -23,7 +23,7 @@ use PluginName\includes\Plugin;
  * @subpackage PluginName/public
  * @author     Your Name <email@example.com>
  */
-class Pub {
+class Frontend {
 
 	/**
 	 * A reference to the main plugin class

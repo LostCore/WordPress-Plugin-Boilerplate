@@ -19,6 +19,7 @@ The WordPress Plugin Boilerplate includes the following files:
 * Browserify enforce a more organized and stable structure of the javascript code.
 * class-plugin, class-admin and class-public are now more deeply connected, with class-plugin in the middle. You can access them from the loader.
 * Some of the redundant variables (as plugin_name, version...) are now centralized in class-plugin.
+* PSR-4 Support
 
 ## Installation
 

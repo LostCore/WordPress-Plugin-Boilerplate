@@ -36,22 +36,46 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-spl_autoload_register( '\PluginName\autoloader' );
+// Custom plugin autoloader function
+spl_autoload_register( function($class){
+	$prefix = "PluginName\\";
+	$plugin_path = plugin_dir_path( __FILE__ );
+	$base_dir = $plugin_path."src/";
 
+	// does the class use the namespace prefix?
+	$len = strlen($prefix);
+	if (strncmp($prefix, $class, $len) !== 0) {
+		// no, move to the next registered autoloader
+		return;
+	}
 
-/**
+	// get the relative class name
+	$relative_class = substr($class, $len);
+
+	// replace the namespace prefix with the base directory, replace namespace
+	// separators with directory separators in the relative class name, append
+	// with .php
+	$file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+	// if the file exists, require it
+	if (file_exists($file)) {
+		require $file;
+	}
+});
+
+/*
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
  */
 register_activation_hook( __FILE__, function(){ Activator::activate(); } );
 
-/**
+/*
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-plugin-name-deactivator.php
  */
 register_deactivation_hook( __FILE__, function(){ Deactivator::deactivate(); } );
 
-/**
+/*
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
@@ -60,37 +84,4 @@ register_deactivation_hook( __FILE__, function(){ Deactivator::deactivate(); } )
  *
  * @since    1.0.0
  */
-(new Plugin( 'plugin-name', plugin_dir_path( dirname( __FILE__ ) ) ) )->run();
-
-/**
- * Custom plugin autoloader function
- * @param $class
- */
-function autoloader($class){
-	$plugin_path = plugin_dir_path( __FILE__ );
-
-	if(isset($childclass[0]) && isset($childclass[1])){
-		if($childclass[0] == "PluginName"){
-			switch($childclass[1]){
-				case "includes":
-					$name = end($childclass);
-					$name = lcfirst(preg_replace("/_/","-",$name));
-					require_once $plugin_path."includes/class-".$name.".php";
-					break;
-				case "widgets":
-					$name = end($childclass);
-					require_once $plugin_path."widgets/".$name.".php";
-					break;
-			}
-		}
-	}
-
-	switch($class){
-		case 'PluginName\pub\Pub':
-			require_once plugin_dir_path( __FILE__ ) . 'public/class-public.php';
-			break;
-		case 'PluginName\admin\Admin':
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-admin.php';
-			break;
-	}
-}
+(new Plugin('plugin-name'))->run();
