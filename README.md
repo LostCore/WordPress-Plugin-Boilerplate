@@ -68,9 +68,9 @@ For reference, [here's a discussion](http://make.wordpress.org/themes/2013/03/04
 
 ### Structure
 
-* `plugin-name/includes` is where functionality shared between the admin area and the public-facing parts of the site reside
-* `plugin-name/admin` is for all admin-specific functionality
-* `plugin-name/public` is for all public-facing functionality
+* `plugin-name/src/includes` is where functionality shared between the admin area and the public-facing parts of the site reside
+* `plugin-name/src/admin` is for all admin-specific functionality
+* `plugin-name/src/frontend` is for all public-facing functionality
 * `plugin-name/assets` is for all assets (frontend and backend)
 * `plugin-name/assets/vendors` is a bower-ready folder
 * `plugin-name/vendors` is a composer-ready folder
