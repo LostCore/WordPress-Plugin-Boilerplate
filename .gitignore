@@ -1,3 +1,17 @@
+# Dist files
+plugin-name/assets/dist/css/*
+plugin-name/assets/dist/js/*
+
+# Vendor files
+plugin-name/vendors/*
+!plugin-name/vendors/.gitkeep
+plugin-name/assets/vendors/*
+!plugin-name/assets/vendors/.gitkeep
+
+# Build files
+plugin-name/builds/*
+plugin-name/assets/src/js/bundle.js
+
 # Numerous always-ignore extensions
 *.diff
 *.err

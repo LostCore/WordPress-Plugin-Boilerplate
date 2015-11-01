@@ -4,7 +4,7 @@ var settings = {
             "**/*",
             "!.*" ,
             "!gulpfile.js" ,
-            "!gulpfile.configs.js",
+            "!gulpfile-configs.js",
             "!package.json",
             "!bower.json",
             "!Movefile",

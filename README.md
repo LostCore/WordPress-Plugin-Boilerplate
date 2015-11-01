@@ -1,4 +1,4 @@
-# WordPress Plugin Boilerplate
+# LostCore's WordPress Plugin Boilerplate
 
 A standardized, organized, object-oriented foundation for building high-quality WordPress Plugins.
 
@@ -9,24 +9,29 @@ The WordPress Plugin Boilerplate includes the following files:
 * `.gitignore`. Used to exclude certain files from the repository.
 * `CHANGELOG.md`. The list of changes to the core project.
 * `README.md`. The file that you’re currently reading.
-* A `plugin-name` directory that contains the source code - a fully executable WordPress plugin.
+* A `plugin-name` directory that contains the source code.
 
 ## Features
 
-* The Boilerplate is based on the [Plugin API](http://codex.wordpress.org/Plugin_API), [Coding Standards](http://codex.wordpress.org/WordPress_Coding_Standards), and [Documentation Standards](http://make.wordpress.org/core/handbook/inline-documentation-standards/php-documentation-standards/).
-* All classes, functions, and variables are documented so that you know what you need to be changed.
-* The Boilerplate uses a strict file organization scheme that correspond both to the WordPress Plugin Repository structure, and that make it easy to organize the files that compose the plugin.
-* The project includes a `.pot` file as a starting point for internationalization.
+* The Boilerplate is a more opinionated fork of the [DevinVinson's one](http://wppb.io/), and supports all the features of its parent project.
+* Namespaced structure: there is no need to rename the files anymore.
+* Gulp, sass, browserify support. There is a "build task" also included.
+* Browserify enforce a more organized and stable structure of the javascript code.
+* class-plugin, class-admin and class-public are now more deeply connected, with class-plugin in the middle. You can access them from the loader.
+* Some of the redundant variables (as plugin_name, version...) are now centralized in class-plugin.
 
 ## Installation
 
 The Boilerplate can be installed directly into your plugins folder "as-is". You will want to rename it and the classes inside of it to fit your needs.
 
-Note that this will activate the source code of the Boilerplate, but because the Boilerplate has no real functionality so no menu  items, meta boxes, or custom post types will be added.
+Before actual activate the plugin via wordpress you need:
 
-## WordPress.org Preparation
+- To rename all occurrences of "PluginName" and "plugin-name". There is also an occurrence of "pluginName" in `assets/src/js/main.js`.
+- Run `npm install`
 
-The original launch of this version of the boilerplate included the folder structure needed for using your plugin on the WordPress.org. That folder structure has been moved to its own repo here: https://github.com/DevinVinson/Plugin-Directory-Boilerplate
+Note tha the Boilerplate has no real functionality so no menu items, meta boxes, or custom post types will be added.
+
+**ATTENTION**: PHP >= 5.4 its required.
 
 ## Recommended Tools
 
@@ -71,23 +76,3 @@ Note that if you include your own classes, or third-party libraries, there are t
 Note that previous versions of the Boilerplate did not include `Plugin_Name_Loader` but this class is used to register all filters and actions with WordPress.
 
 The example code provided shows how to register your hooks with the Loader class.
-
-### What About Other Features?
-
-The previous version of the WordPress Plugin Boilerplate included support for a number of different projects such as the [GitHub Updater](https://github.com/afragen/github-updater).
-
-These tools are not part of the core of this Boilerplate, as I see them as being additions, forks, or other contributions to the Boilerplate.
-
-The same is true of using tools like Grunt, Composer, etc. These are all fantastic tools, but not everyone uses them. In order to  keep the core Boilerplate as light as possible, these features have been removed and will be introduced in other editions, and will be listed and maintained on the project homepage
-
-# Credits
-
-The WordPress Plugin Boilerplate was started in 2011 by [Tom McFarlin](http://twitter.com/tommcfarlin/) and has since included a number of great contributions. In March of 2015 the project was handed over by Tom to Devin Vinson.
-
-The current version of the Boilerplate was developed in conjunction with [Josh Eaton](https://twitter.com/jjeaton), [Ulrich Pogson](https://twitter.com/grapplerulrich), and [Brad Vincent](https://twitter.com/themergency).
-
-The homepage is based on a design as provided by [HTML5Up](http://html5up.net), the Boilerplate logo was designed by  Rob McCaskill of [BungaWeb](http://bungaweb.com), and the site `favicon` was created by [Mickey Kay](https://twitter.com/McGuive7).
-
-## Documentation, FAQs, and More
-
-If you’re interested in writing any documentation or creating tutorials please [let me know](http://devinvinson.com/contact/) .

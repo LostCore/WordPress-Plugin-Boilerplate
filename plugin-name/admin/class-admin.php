@@ -62,10 +62,6 @@ class Admin {
 		 * class.
 		 */
 
-		if($this->plugin->is_debug()){
-			wp_enqueue_style( $this->plugin->get_name(), $this->plugin->get_uri() . 'assets/src/css/admin.css', array(), $this->plugin->get_version(), 'all' );
-		}else{
-			wp_enqueue_style( $this->plugin->get_name(), $this->plugin->get_uri() . 'assets/dist/css/admin-min.css', array(), $this->plugin->get_version(), 'all' );
-		}
+		wp_enqueue_style( $this->plugin->get_name(), $this->plugin->get_uri() . 'assets/dist/css/admin.min.css', array(), $this->plugin->get_version(), 'all' );
 	}
 }
