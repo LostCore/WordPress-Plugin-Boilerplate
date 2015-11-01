@@ -262,7 +262,10 @@ class Plugin {
 	 * @return string
 	 */
 	public function get_uri(){
-		return get_bloginfo("wpurl")."/wp-content/plugins/".$this->plugin_name."/";
+		static $uri;
+		if($uri) return $uri; //We want to save some queries
+		$uri = get_bloginfo("url")."/wp-content/plugins/".$this->plugin_name."/";
+		return $uri;
 	}
 
 	/**
