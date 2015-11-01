@@ -63,9 +63,9 @@ class Pub {
 		 */
 
 		if($this->plugin->is_debug()){
-			wp_enqueue_style( $this->plugin->get_plugin_name(), $this->plugin->get_uri() . 'assets/src/css/public.css', array(), $this->plugin->get_version(), 'all' );
+			wp_enqueue_style( $this->plugin->get_name(), $this->plugin->get_uri() . 'assets/src/css/public.css', array(), $this->plugin->get_version(), 'all' );
 		}else{
-			wp_enqueue_style( $this->plugin->get_plugin_name(), $this->plugin->get_uri() . 'assets/dist/css/public-min.css', array(), $this->plugin->get_version(), 'all' );
+			wp_enqueue_style( $this->plugin->get_name(), $this->plugin->get_uri() . 'assets/dist/css/public-min.css', array(), $this->plugin->get_version(), 'all' );
 		}
 	}
 }

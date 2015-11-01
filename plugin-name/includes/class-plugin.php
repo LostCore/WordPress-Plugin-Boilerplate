@@ -162,7 +162,7 @@ class Plugin {
 	 */
 	private function set_locale() {
 		$plugin_i18n = new i18n();
-		$plugin_i18n->set_domain( $this->get_plugin_name() );
+		$plugin_i18n->set_domain( $this->get_name() );
 		$plugin_i18n->set_language_dir( $this->plugin_relative_dir."/languages/" );
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
@@ -172,12 +172,26 @@ class Plugin {
 		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_main_script' );
 	}
 
+	/**
+	 * Localize and enqueue the plugin main js file.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 */
 	public function enqueue_main_script(){
 		if($this->is_debug()){
-			wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/src/js/bundle.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+			wp_register_script( $this->get_name()."-js", $this->get_uri() . 'assets/src/js/bundle.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
 		}else{
-			wp_enqueue_script( $this->get_plugin_name(), $this->get_uri() . 'assets/dist/js/plugin-name.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
+			wp_register_script( $this->get_name()."-js", $this->get_uri() . 'assets/dist/js/plugin-name.js', array( 'jquery', 'underscore', 'backbone' ), $this->get_version(), false );
 		}
+		wp_localize_script($this->get_name()."-js",lcfirst("PluginName"),[
+			'ajaxurl' => admin_url('admin-ajax.php'),
+			'wpurl' => get_bloginfo('wpurl'),
+			'isAdmin' => is_admin(),
+			'isDebug' => $this->is_debug(),
+			'wp_screen' => function_exists("get_current_screen") ? get_current_screen() : null
+		]);
+		wp_enqueue_script($this->get_name()."-js");
 	}
 
 	/**
@@ -218,7 +232,7 @@ class Plugin {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_plugin_name() {
+	public function get_name() {
 		return $this->plugin_name;
 	}
 
@@ -272,6 +286,12 @@ class Plugin {
 		return $this->plugin_path;
 	}
 
+	/**
+	 * Get plugin path relative to WP_PLUGIN_DIR
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function get_relative_dir(){
 		return $this->plugin_relative_dir;
 	}
