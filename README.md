@@ -31,7 +31,7 @@ Before actual activate the plugin via wordpress you need:
 
 Note tha the Boilerplate has no real functionality so no menu items, meta boxes, or custom post types will be added.
 
-**ATTENTION**: PHP >= 5.4 its required.
+**ATTENTION**: PHP >= 5.4 is required.
 
 ## Recommended Tools
 
@@ -65,14 +65,12 @@ The WordPress Plugin Boilerplate is licensed under the GPL v2 or later; however,
 
 For reference, [here's a discussion](http://make.wordpress.org/themes/2013/03/04/licensing-note-apache-and-gpl/) that covers the Apache 2.0 License used by [Bootstrap](http://twitter.github.io/bootstrap/).
 
-### Includes
-
-Note that if you include your own classes, or third-party libraries, there are three locations in which said files may go:
+### Structure
 
 * `plugin-name/includes` is where functionality shared between the admin area and the public-facing parts of the site reside
 * `plugin-name/admin` is for all admin-specific functionality
 * `plugin-name/public` is for all public-facing functionality
-
-Note that previous versions of the Boilerplate did not include `Plugin_Name_Loader` but this class is used to register all filters and actions with WordPress.
-
-The example code provided shows how to register your hooks with the Loader class.
+* `plugin-name/assets` is for all assets (frontend and backend)
+* `plugin-name/assets/vendors` is a bower-ready folder
+* `plugin-name/vendors` is a composer-ready folder
+* `plugin-name/builds` is where all builds goes to
