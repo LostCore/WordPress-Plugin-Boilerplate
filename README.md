@@ -1,4 +1,4 @@
-# LostCore's WordPress Plugin Boilerplate
+# WAGA WordPress Plugin Boilerplate
 
 A standardized, organized, object-oriented foundation for building high-quality WordPress Plugins.
 
